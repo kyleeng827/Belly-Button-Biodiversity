@@ -21,24 +21,32 @@ function buildCharts(sample) {
 
   // @TODO: Use `d3.json` to fetch the sample data for the plots
   d3.json(`/samples/${sample}`).then(data => {
-    // var data = [].slice.call(data).sort((a,b) => b.sample_values - a.sample_values);
-    // var data = [].slice.call(data).slice(0, 10);
-    // var data = data.reverse();
-
+    // Create variables for data to be plotted
     const sample_values = data.sample_values;
     const otu_ids = data.otu_ids;
     const otu_labels = data.otu_labels;
-    
 
-
+    // Create trace for pie chart
     var pietrace = {
       values: sample_values.slice(0,10),
       labels: otu_labels.slice(0,10),
-      type: "pie"
+      type: "pie",
+      hovertext: otu_labels.slice(0,10),
+      hoverinfo: "hovertext"
     };
-    var piedata = [pietrace];
-    Plotly.newPlot("pie", piedata);
 
+    // Format pie chart
+    var pielayout = {
+      margin:{t:0}
+    };
+
+    // Set data to trace
+    var piedata = [pietrace];
+
+    // Plot
+    Plotly.newPlot("pie", piedata, pielayout);
+
+    // Same steps as above, except for bubble chart
     var bubbletrace = {
       x: otu_ids,
       y: sample_values,
@@ -48,24 +56,16 @@ function buildCharts(sample) {
         size: sample_values,
         color: otu_ids,
       }
-    }
-    var bubbledata = [bubbletrace]
-    Plotly.newPlot("bubble", bubbledata)
-    
-    
+    };
+    var bubblelayout = {
+      margin: {t: 0},
+      xaxis: {title: "OTU ID"}
+    };
+
+    var bubbledata = [bubbletrace];
+    Plotly.newPlot("bubble", bubbledata, bubblelayout); 
   });
-  
-
-
-    // @TODO: Build a Bubble Chart using the sample data
-
-    // @TODO: Build a Pie Chart
-    // HINT: You will need to use slice() to grab the top 10 sample_values,
-    // otu_ids, and labels (10 each).
 }
-
-
-
 
 function init() {
   // Grab a reference to the dropdown select element
